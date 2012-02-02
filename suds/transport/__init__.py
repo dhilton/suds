@@ -28,7 +28,7 @@ def decode_message(headers, raw_message):
         decoded_reply = parser.parsestr(raw_reply)
         payload_parts = (part.get_payload()
                          for part in decoded_reply.get_payload())
-        return ''.join(payload_parts)
+        return (payload_parts[0], payload_parts[1:])
     else:
         return raw_message
 
@@ -101,8 +101,7 @@ class Reply:
         """
         self.code = code
         self.headers = headers.dict
-        self.raw_message = message
-        self.message = decode_message(headers, self.raw_message)
+        self.message, self.attachments = decode_message(headers, self.message)
 
     def __str__(self):
         s = []
